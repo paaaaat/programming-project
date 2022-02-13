@@ -120,3 +120,35 @@ print(owid[owid['location'] = 'Monaco']['gdp_per_capita'])
 # speicifically for columns like handwashing_facilities, human_development index
 # and stringency_index (just to name a few), NaN values can be replaced with the
 # mean of the same features, grouped by the location's continent.
+
+print(owid('continent')['female_smokers'].mean())
+continents = ['Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America', 'World']
+
+# defined a function that takes the column, creates a list of the means of
+# that column based on the mean for the associated continent
+# finally loops through the list and every row of the dataset and if the
+# the continent matches AND the value is NaN, it replaces it with the mean
+
+def filling_the_na_values(column_name):
+  list_of_means = owid.groupby('continent')[column_name].mean().tolist()
+  zipped_list = [(x, y) for x, y in zip(continents, list_of_means)]
+
+  for i in zipped_list:
+    for index in owid.index:
+      if owid.loc[index, 'continent'] == i[0] and np.isnan(owid.loc[index, column_name]):
+        owid.loc[index, column_name] = i[1]
+
+# although the expensive loops, for some reason the code below (which takes advantage
+# of pandas datframe.loc property), didn't fill the values, although it could access
+# the column (series) efficiently.
+
+# THE CODE:
+# def filling_the_na_values_with_means(column):
+#   list_of_means = owid.groupby('continent')[column].mean().tolist()
+#   zipped_list = [(x, y) for x, y in zip(continents, list_of_means)]
+#
+#   for i in zipped_list:
+#     # owid.iloc[owid['continent'] == i[0] & owid[column]].fillna(i[1], inplace=True)
+#     owid.loc[owid['continent'] == i[0], column].fillna(i[1], inplace=True)
+
+filling_the_na_values_with_means('stringency_index')

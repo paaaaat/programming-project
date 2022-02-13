@@ -63,5 +63,29 @@ cols_to_remove = [
     'new_cases_per_million',
     'new_deaths_per_million'
     ]
+
 owid.drop(cols_to_remove, axis=1, inplace=True)
-owid.info()
+print(owid.info())
+
+# now it's time to replace the NaN values
+
+print(owid[owid['total_cases'].isnull()]['location'].unique())
+print(owid[owid['location'] == 'Albania'].head())
+print(owid[owid['location'] == 'Taiwan'].head())
+print(owid[owid['location'] == 'Taiwan'].tail())
+
+# we note that as far as the values of cases and deaths are concerned,
+# as for example for Taiwan, NaN values come from the first few rows.
+# these first rows refer to the beginning of the pandemic, so it is reasonable
+# to say that these dates hold 0 new_cases and 0 new_deaths, beacause were
+# not even detected by local governments
+# let's fill these rows with 0s
+
+index_stringency_index = owid.columns.get_loc('stringency_index')
+counter = 0
+
+while counter < index_stringency_index:
+  owid.iloc[:, counter].fillna(0, inplace=True)
+  counter += 1
+
+print(owid.info())

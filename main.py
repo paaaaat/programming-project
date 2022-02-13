@@ -89,3 +89,34 @@ while counter < index_stringency_index:
   counter += 1
 
 print(owid.info())
+
+# let's fix the population
+
+print(owid[owid['population'].isnull()]['location'].unique())
+owid.loc[owid['location'] == 'International', 'population'] = 7900000000
+owid.loc[owid['location'] == 'Northern Cyprus', 'population'] = 326000
+str(owid['population'].count()) + ' truthy values out of ' + str(len(owid))
+print(owid[owid['population_density'].isnull()]['location'].unique())
+
+# population_density may be an important features for a diseas like a virus,
+# but there are way too many location with NaN values, so we cannot replace them
+# with 0s nor infere a mean.
+# let's drop it
+
+owid.drop('population_density', axis=1, inplace=True)
+
+# many more columns remain with NaN values.
+# these cannot be treated as the first columns, so 0s aren't logically exhaustive.
+
+print(owid[owid['gdp_per_capita'].isnull()]['location'].unique())
+print(owid[owid['location'] = 'Faeroe Islands']['gdp_per_capita'])
+print(owid[owid['location'] = 'Vatican']['gdp_per_capita'])
+print(owid[owid['location'] = 'Monaco']['gdp_per_capita'])
+
+# we see that none of the rows are filled with truthy values, so methods like
+# bfill and ffill are useless.
+# indeed a consideration can be made.
+# for this uni project, precision in data mining can be not that precious, so
+# speicifically for columns like handwashing_facilities, human_development index
+# and stringency_index (just to name a few), NaN values can be replaced with the
+# mean of the same features, grouped by the location's continent.

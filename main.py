@@ -152,3 +152,10 @@ def filling_the_na_values(column_name):
 #     owid.loc[owid['continent'] == i[0], column].fillna(i[1], inplace=True)
 
 filling_the_na_values_with_means('stringency_index')
+
+# some data exploration
+
+import matplotlib.pyplot as plt
+import seaborn as sb
+
+owid.hist(column=owid.columns[3:12], bins=100, figsize=(10,10))

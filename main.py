@@ -49,3 +49,19 @@ print(owid[owid['continent'].isnull()]['location'].unique())
 
 owid['continent'].fillna(value='World', inplace=True)
 print(str(owid['continent'].count()) + ' true values out of ' + str(len(owid)))
+
+# from both the info() and github repo we see that the features expressing
+# cases, vaccinations, deaths... are sided by their 'smoothed' feature
+# the 'smoothed' data refers to the correction of the data by means of
+# some probabilistic models, especially useful when the data come from
+# third-world countries and war-zones
+# we can say that 'smoothed' features are more accurate than their counterparts
+
+cols_to_remove = [
+    'new_cases',
+    'new_deaths',
+    'new_cases_per_million',
+    'new_deaths_per_million'
+    ]
+owid.drop(cols_to_remove, axis=1, inplace=True)
+owid.info()

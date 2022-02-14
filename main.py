@@ -159,3 +159,21 @@ import matplotlib.pyplot as plt
 import seaborn as sb
 
 owid.hist(column=owid.columns[3:12], bins=100, figsize=(10,10))
+owid[owid['continent'] != 'World']['total_deaths'].hist(bins=100)
+total_cases_max_mask = owid.groupby('location')['total_cases'].max()
+total_deaths_max_mask = owid.groupby('location')['total_deaths'].max()
+
+plt.figure(figsize=(10, 6))
+plt.xlabel('Total Deaths')
+plt.ylabel('Total Cases')
+plt.scatter(
+    total_deaths_max_mask,
+    total_cases_max_mask,
+    c=range(len(owid['location'].unique()))
+    )
+
+# the plots seem biased by the high value of the rows with 'continent' == 'World'
+# we shall create another DF with the World continent value, which we name 'macro_owid'
+
+macro_owid = owid[owid['continent'] == 'World']
+owid.drop(owid[owid['continent'] == 'World'].index, inplace=True)

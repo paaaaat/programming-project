@@ -177,3 +177,8 @@ plt.scatter(
 
 macro_owid = owid[owid['continent'] == 'World']
 owid.drop(owid[owid['continent'] == 'World'].index, inplace=True)
+
+macro_owid_time_series = macro_owid.melt(['locaton', 'date', 'new_cases_smoothed'])/
+    .pivot_table(index='location', columns='date', values='new_cases_smoothed', aggfunc='first')
+macro_owid_time_series.fillna(0, inplace=True)
+macro_owid_time_series.drop(index='International', inplace=True)

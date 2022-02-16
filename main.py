@@ -171,3 +171,48 @@ owid.reset_index(drop=True, inplace=True)
 owid.drop(labels='date', axis=1, inplace=True)
 
 total_cases_mask = owid.groupby('continent')['total_cases'].sum()
+
+# some modifications to Seaborn and matplotlib
+
+sns.set_style('darkgrid')
+plt.rc('axes', titlesize=18)
+plt.rc('axes', labelsize=14)
+plt.rc('xtick', labelsize=13)
+plt.rc('legend', fontsize=13)
+plt.rc('font', size=13)
+
+# let's see the correlations
+
+plt.figure(figsize=(18, 13), tight_layout=True)
+sns.heatmap(owid.corr(), annot=True, cmap='viridis')
+plt.show()
+
+# cases per covid disease by continent
+
+plt.figure(figsize=(8,6), tight_layout=True)
+colors = sns.color_palette('pastel')
+plt.bar(owid['continent'].unique(), total_cases_mask, color=colors[:5])
+plt.xlabel('Continent')
+plt.ylabel('Total Cases')
+plt.title('Cases per Covid disease by continent')
+plt.show()
+
+# The continent with the most deaths per Covid seems to be Europe.
+# The stringency level is correlated with the cases per million inhabitants?
+
+plt.figure(figsize=(13, 10), tight_layout=True)
+ax = sns.scatterplot(data=owid, x='total_cases_per_million', y='stringency_index', hue='continent', palette='pastel', s=60)
+ax.set(xlabel='Total Cases per Million', ylabel='Stringency Index')
+ax.legend(title='Continent', title_fontsize = 12)
+plt.show()
+
+# can't tell
+# what about the total cases per million inhabitans with the median age?
+
+plt.subplots(figsize=(10, 10))
+sns.scatterplot(data=owid, x='total_cases_per_million', y='median_age', s=5, color=".15")
+sns.histplot(data=owid, x='total_cases_per_million', y='median_age', bins=50, pthresh=.1, cmap="mako")
+sns.kdeplot(data=owid, x='total_cases_per_million', y='median_age', levels=5, color="w", linewidths=1)
+
+# seems that very young countries have suffered less cases
+# we use cases and deaths per million beacuse are more normalized values

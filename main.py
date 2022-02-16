@@ -124,6 +124,9 @@ def filling_the_na_values_with_means(column_name):
 #   for i in zipped_list:
 #     owid.loc[owid['continent'] == i[0], column].fillna(i[1], inplace=True)
 
+for column in owid.columns[index_stringency_index+2:]:
+    filling_the_na_values_with_means(column)
+
 filling_the_na_values_with_means('stringency_index')
 
 # some data exploration
@@ -131,8 +134,6 @@ filling_the_na_values_with_means('stringency_index')
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-owid.hist(column=owid.columns[3:12], bins=100, figsize=(10,10))
-owid[owid['continent'] != 'World']['total_deaths'].hist(bins=100)
 total_cases_max_mask = owid.groupby('location')['total_cases'].max()
 total_deaths_max_mask = owid.groupby('location')['total_deaths'].max()
 
@@ -144,6 +145,7 @@ plt.scatter(
     total_cases_max_mask,
     c=range(len(owid['location'].unique()))
     )
+plt.show()
 
 # the plots seem biased by the high value of the rows with 'continent' == 'World'
 # we shall create another DF with the World continent value, which we name 'macro_owid'
@@ -151,6 +153,21 @@ plt.scatter(
 macro_owid = owid[owid['continent'] == 'World']
 owid.drop(owid[owid['continent'] == 'World'].index, inplace=True)
 
-# let's see some correlations
+# as our intention is not to plot time series, we can drop all columns starting
+# with 'new', as they are grouped in the 'total' columns
 
-print(owid)
+owid.drop(
+    labels=[x for x in owid.columns if 'new' in x],
+    axis=1,
+    inplace=True
+    )
+
+# so our new dataframe will consist of the total and fixed values: we can
+# take the rows that have 01/01/2022
+
+owid_backup = owid.copy()
+owid = owid[owid['date'] == '2022-01-01']
+owid.reset_index(drop=True, inplace=True)
+owid.drop(labels='date', axis=1, inplace=True)
+
+total_cases_mask = owid.groupby('continent')['total_cases'].sum()

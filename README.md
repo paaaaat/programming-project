@@ -15,6 +15,9 @@ computation and the visualization were more effective on Google Colaboratory, so
 in the end the project has been uploaded on the notebook, and then on Github.
 
 **Course** | Programming and Database
+<br/>
 **Degree** | Master in Data Science
+<br/>
 **ID** | VR474246
+<br/>
 **Name, Surname** | Patrick Hamzaj

@@ -2,7 +2,7 @@
 
 ## Analyzing the Covid-19
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Y0Ki2dQ1vo1WL7pF-W8rkYcWoxl50gbG?usp=sharing]
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Y0Ki2dQ1vo1WL7pF-W8rkYcWoxl50gbG?usp=sharing)]
 
 This project covers some interesting features of Covid-19 dataset, taken from
 Our World In Data [repository](https://github.com/owid/covid-19-data/tree/master/public/data/).

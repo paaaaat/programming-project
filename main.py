@@ -124,10 +124,8 @@ def filling_the_na_values_with_means(column_name):
 #   for i in zipped_list:
 #     owid.loc[owid['continent'] == i[0], column].fillna(i[1], inplace=True)
 
-for column in owid.columns[index_stringency_index+2:]:
+for column in owid.columns[index_stringency_index:]:
     filling_the_na_values_with_means(column)
-
-filling_the_na_values_with_means('stringency_index')
 
 # some data exploration
 
@@ -215,4 +213,40 @@ sns.histplot(data=owid, x='total_cases_per_million', y='median_age', bins=50, pt
 sns.kdeplot(data=owid, x='total_cases_per_million', y='median_age', levels=5, color="w", linewidths=1)
 
 # seems that very young countries have suffered less cases
-# we use cases and deaths per million beacuse are more normalized values
+# we use cases and deaths per million beacuse cut the outliers
+# e.g. USA have by far the most deaths in total, but not the most deaths per million
+
+plt.figure(figsize=(20, 8))
+plt.xlabel('Total Deaths')
+plt.ylabel('Total Cases')
+
+plt.subplot(1, 2, 1)
+plt.scatter(
+    owid[owid['continent'] == 'North America']['total_deaths'],
+    owid[owid['continent'] == 'North America']['total_cases'],
+    c=range(len(owid[owid['continent'] == 'North America']['location'].unique())))
+
+plt.subplot(1, 2, 2)
+plt.scatter(
+    owid[owid['continent'] == 'North America']['total_deaths_per_million'],
+    owid[owid['continent'] == 'North America']['total_cases_per_million'],
+    c=range(len(owid[owid['continent'] == 'North America']['location'].unique())))
+
+# so it seems reasonable to work with per_million
+# from the graph below, we see that continents with the highest median age
+# have suffered the most Deaths
+# i.e. Europe, which has the highest median age versus Africa, a very young continent
+
+plt.figure(figsize=(13, 10), tight_layout=True)
+
+ax = sns.scatterplot(
+    data=owid,
+    x='total_deaths_per_million',
+    y='median_age',
+    hue='continent',
+    palette='pastel',
+    s=60
+    )
+
+ax.set(xlabel='Total Deaths per Million', ylabel='Median Age')
+ax.legend(title='Continent', title_fontsize = 12)
